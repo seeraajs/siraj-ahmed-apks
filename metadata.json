@@ -1,0 +1,6 @@
+{
+  "name": "Siraj Ahmed Tech",
+  "description": "Android APK distribution store and application hub with admin management, user ratings, likes, category filtering, and direct downloads.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

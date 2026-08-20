@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Check if requester is the authorized administrator
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == 'seeraajs1@gmail.com';
+    }
+
+    // Applications collection
+    match /applications/{appId} {
+      // Anyone can read published applications. Admin can read all (including drafts)
+      allow read: if (resource == null) || (resource.data.published == true) || isAdmin();
+      
+      // Only the verified admin can create, update metadata, or delete apps
+      allow create, delete: if isAdmin();
+      
+      // Admin can update any field. Public users can only increment download counts or update ratings/likes aggregations
+      allow update: if isAdmin() || (
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['downloads', 'likes', 'ratingAverage', 'ratingCount', 'updatedAt'])
+      );
+
+      // Subcollection for user ratings
+      match /ratings/{userId} {
+        allow read: if true;
+        allow write: if request.resource.data.rating >= 1 && request.resource.data.rating <= 5;
+      }
+
+      // Subcollection for user likes
+      match /likes/{userId} {
+        allow read: if true;
+        allow write: if true;
+      }
+    }
+
+    // Default deny all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

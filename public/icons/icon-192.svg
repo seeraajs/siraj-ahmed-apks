@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <defs><linearGradient id="sat-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#22d3ee"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs>
+  <rect width="192" height="192" rx="40" fill="#020617"/>
+  <rect x="12" y="12" width="168" height="168" rx="34" fill="none" stroke="url(#sat-gradient)" stroke-width="7"/>
+  <text x="96" y="116" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="57" font-weight="800" letter-spacing="-3" fill="#ecfeff">SAT</text>
+  <path d="M48 137h96" stroke="#22d3ee" stroke-width="5" stroke-linecap="round"/>
+</svg>

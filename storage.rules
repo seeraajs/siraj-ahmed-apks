@@ -1,0 +1,18 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == 'seeraajs1@gmail.com';
+    }
+
+    // App media & APK storage path: apps/{appId}/{allPaths=**}
+    match /apps/{appId}/{allPaths=**} {
+      // Public read for downloads, icons, and screenshots
+      allow read: if true;
+      
+      // Only administrator can upload, replace, or delete files
+      allow write, delete: if isAdmin();
+    }
+  }
+}
