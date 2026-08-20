@@ -15,8 +15,10 @@ import {
   Terminal
 } from 'lucide-react';
 import { Application, ViewState, AppSortOption, AdminUser } from './types';
-import { INITIAL_APPS } from './data/initialApps';
-import { getCurrentAdmin, signOutAdmin } from './utils/auth';
+import { addDoc, collection, deleteDoc, doc, increment, onSnapshot, updateDoc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth, db } from '../lib/firebase';
+import { getCurrentAdmin, isAdminEmail, signOutAdmin, subscribeToAdminAuth } from './utils/auth';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { AppCard } from './components/AppCard';
@@ -62,22 +64,42 @@ export default function App() {
 
   const [adminUser, setAdminUser] = useState<AdminUser | null>(() => getCurrentAdmin());
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [apps, setApps] = useState<Application[]>([]);
+  const [firebaseLoading, setFirebaseLoading] = useState(true);
+  const [firebaseError, setFirebaseError] = useState<string | null>(null);
 
-  const [apps, setApps] = useState<Application[]>(() => {
-    try {
-      const saved = localStorage.getItem('sat_apps_repository_v2');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        // Filter out any legacy dummy apps if present
-        if (Array.isArray(parsed)) {
-          return parsed.filter((item: Application) => !['sat-app-1', 'sat-app-2', 'sat-app-3', 'sat-app-4', 'sat-app-5'].includes(item.id));
-        }
+  useEffect(() => {
+    const unsubscribe = subscribeToAdminAuth((user) => {
+      setAdminUser(user);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const applicationsRef = collection(db, 'applications');
+
+    const unsubscribe = onSnapshot(
+      applicationsRef,
+      (snapshot) => {
+        const loadedApps = snapshot.docs.map((docSnap) => ({
+          id: docSnap.id,
+          ...docSnap.data(),
+        })) as Application[];
+
+        setApps(loadedApps);
+        setFirebaseLoading(false);
+        setFirebaseError(null);
+      },
+      (error) => {
+        console.error('Firestore applications listener failed:', error);
+        setFirebaseError('Unable to load applications from the repository.');
+        setFirebaseLoading(false);
       }
-    } catch (e) {
-      console.warn('Could not load repository:', e);
-    }
-    return INITIAL_APPS;
-  });
+    );
+
+    return () => unsubscribe();
+  }, []);
 
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState('');
@@ -206,21 +228,12 @@ export default function App() {
   };
 
   const handleSignOut = () => {
-    signOutAdmin();
+    void signOutAdmin();
     setAdminUser(null);
     if (view === 'admin') {
       navigateTo('home');
     }
   };
-
-  // Sync to local storage
-  useEffect(() => {
-    try {
-      localStorage.setItem('sat_apps_repository_v2', JSON.stringify(apps));
-    } catch (e) {
-      console.warn('Could not persist repository:', e);
-    }
-  }, [apps]);
 
   // Categories list
   const categories = ['All', ...Array.from(new Set(apps.map((a) => a.category)))];
@@ -246,96 +259,107 @@ export default function App() {
   });
 
   // Action Handlers
-  const handleDownload = (app: Application) => {
-    // Increment download count
-    setApps((prev) =>
-      prev.map((a) =>
-        a.id === app.id ? { ...a, downloads: (a.downloads || 0) + 1, updatedAt: Date.now() } : a
-      )
-    );
-    
+  const handleDownload = async (app: Application) => {
     setDownloadingApp(app);
+
+    try {
+      await updateDoc(doc(db, 'applications', app.id), {
+        downloads: increment(1),
+        updatedAt: Date.now(),
+      });
+    } catch (error) {
+      console.error('Unable to sync APK download count to Firestore:', error);
+    }
+
     if (selectedApp && selectedApp.id === app.id) {
       setSelectedApp({ ...selectedApp, downloads: (selectedApp.downloads || 0) + 1 });
     }
-    
-    // Download the public APK directly from its permanent URL
-console.log("APK URL:", app.apkUrl);
 
-if (app.apkUrl) {
-  const downloadLink = document.createElement('a');
-  downloadLink.href = app.apkUrl;
-  downloadLink.download = app.apkFileName || 'app-release.apk';
-  downloadLink.target = '_blank';
-  downloadLink.rel = 'noopener noreferrer';
+    if (app.apkUrl) {
+      const downloadLink = document.createElement('a');
+      downloadLink.href = app.apkUrl;
+      downloadLink.download = app.apkFileName || 'app-release.apk';
+      downloadLink.target = '_blank';
+      downloadLink.rel = 'noopener noreferrer';
 
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
-  document.body.removeChild(downloadLink);
-}
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
   };
 
-  const handleRateApp = (appId: string, rating: number) => {
-    setApps((prev) =>
-      prev.map((a) => {
-        if (a.id !== appId) return a;
-        const currentCount = a.ratingCount || 0;
-        const currentAvg = a.ratingAverage || 0;
-        const newCount = currentCount + 1;
-        const newAvg = Number(((currentAvg * currentCount + rating) / newCount).toFixed(1));
-        const updated = { ...a, ratingAverage: newAvg, ratingCount: newCount, updatedAt: Date.now() };
-        if (selectedApp && selectedApp.id === appId) {
-          setSelectedApp(updated);
-        }
-        return updated;
-      })
-    );
+  const handleRateApp = async (appId: string, rating: number) => {
+    const app = apps.find((item) => item.id === appId);
+    if (!app) return;
+
+    const currentCount = app.ratingCount || 0;
+    const currentAvg = app.ratingAverage || 0;
+    const newCount = currentCount + 1;
+    const newAvg = Number(((currentAvg * currentCount + rating) / newCount).toFixed(1));
+
+    try {
+      await updateDoc(doc(db, 'applications', appId), {
+        ratingAverage: newAvg,
+        ratingCount: newCount,
+        updatedAt: Date.now(),
+      });
+    } catch (error) {
+      console.error('Unable to sync rating to Firestore:', error);
+    }
   };
 
-  const handleLikeApp = (appId: string, newTotal: number) => {
-    setApps((prev) =>
-      prev.map((a) => {
-        if (a.id !== appId) return a;
-        const updated = { ...a, likes: newTotal, updatedAt: Date.now() };
-        if (selectedApp && selectedApp.id === appId) {
-          setSelectedApp(updated);
-        }
-        return updated;
-      })
-    );
+  const handleLikeApp = async (appId: string, newTotal: number) => {
+    try {
+      await updateDoc(doc(db, 'applications', appId), {
+        likes: newTotal,
+        updatedAt: Date.now(),
+      });
+    } catch (error) {
+      console.error('Unable to sync like count to Firestore:', error);
+    }
   };
 
-  const handleTogglePublish = (appId: string) => {
-    setApps((prev) =>
-      prev.map((a) => (a.id === appId ? { ...a, published: !a.published, updatedAt: Date.now() } : a))
-    );
+  const handleTogglePublish = async (appId: string) => {
+    const app = apps.find((item) => item.id === appId);
+    if (!app) return;
+
+    try {
+      await updateDoc(doc(db, 'applications', appId), {
+        published: !app.published,
+        updatedAt: Date.now(),
+      });
+    } catch (error) {
+      console.error('Unable to update publish state in Firestore:', error);
+    }
   };
 
-  const handleDeleteApp = (appId: string) => {
-    setApps((prev) => prev.filter((a) => a.id !== appId));
+  const handleDeleteApp = async (appId: string) => {
+    try {
+      await deleteDoc(doc(db, 'applications', appId));
+    } catch (error) {
+      console.error('Unable to delete application from Firestore:', error);
+    }
+
     if (selectedApp && selectedApp.id === appId) {
       setSelectedApp(null);
     }
   };
 
-  const handleSaveApp = (appData: Partial<Application>) => {
+  const handleSaveApp = async (appData: Partial<Application>) => {
     if (editingApp) {
-      // Update existing
-      setApps((prev) =>
-        prev.map((a) =>
-          a.id === editingApp.id
-            ? ({
-                ...a,
-                ...appData,
-                updatedAt: Date.now(),
-              } as Application)
-            : a
-        )
-      );
+      const appPayload = {
+        ...appData,
+        updatedAt: Date.now(),
+      };
+
+      try {
+        await updateDoc(doc(db, 'applications', editingApp.id), appPayload);
+      } catch (error) {
+        console.error('Unable to update application in Firestore:', error);
+      }
     } else {
-      // Create new application package with honest initial values
-      const newApp: Application = {
-        id: 'sat-app-' + Date.now(),
+      const newApp = {
+        id: '',
         name: appData.name || 'New Application',
         slug: appData.slug || 'new-app',
         category: appData.category || 'Utilities',
@@ -349,7 +373,7 @@ if (app.apkUrl) {
         features: appData.features || [],
         iconUrl: appData.iconUrl || 'https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=200&auto=format&fit=crop&q=80',
         apkUrl: appData.apkUrl || '',
-          webAppUrl: appData.webAppUrl || '',
+        webAppUrl: appData.webAppUrl || '',
         apkSizeFormatted: appData.apkSizeFormatted || 'N/A',
         apkFileName: appData.apkFileName || `${(appData.name || 'app').replace(/\s+/g, '')}_v${appData.version || '1.0.0'}.apk`,
         screenshots: appData.screenshots || [],
@@ -362,8 +386,15 @@ if (app.apkUrl) {
         createdAt: Date.now(),
         updatedAt: Date.now(),
       };
-      setApps((prev) => [newApp, ...prev]);
+
+      try {
+        const docRef = await addDoc(collection(db, 'applications'), newApp);
+        await updateDoc(doc(db, 'applications', docRef.id), { id: docRef.id });
+      } catch (error) {
+        console.error('Unable to create application in Firestore:', error);
+      }
     }
+
     setIsFormOpen(false);
     setEditingApp(null);
   };
@@ -372,12 +403,24 @@ if (app.apkUrl) {
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 antialiased selection:bg-cyan-500 selection:text-slate-950 font-sans">
       <PwaInstallPrompt />
 
+      {firebaseError && (
+        <div className="mx-auto mt-4 w-full max-w-5xl rounded-2xl border border-rose-800/80 bg-rose-950/50 px-4 py-3 text-xs text-rose-200">
+          {firebaseError}
+        </div>
+      )}
+
       {/* Navigation Bar */}
       <Navbar
         currentView={view}
         onNavigate={(v) => navigateTo(v)}
         appsCount={publishedApps.length}
       />
+
+      {firebaseLoading && (
+        <div className="mx-auto w-full max-w-5xl px-4 pt-4 text-xs text-slate-400">
+          Loading applications from Firebase…
+        </div>
+      )}
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
         {/* VIEW: HOME */}

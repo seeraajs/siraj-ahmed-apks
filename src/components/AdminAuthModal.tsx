@@ -34,13 +34,13 @@ export function AdminAuthModal({ isOpen, onClose, onSuccess }: AdminAuthModalPro
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setIsLoading(true);
 
-    setTimeout(() => {
-      const res = signInAdmin(email, password);
+    try {
+      const res = await signInAdmin(email, password);
       setIsLoading(false);
 
       if (res.success && res.user) {
@@ -49,10 +49,14 @@ export function AdminAuthModal({ isOpen, onClose, onSuccess }: AdminAuthModalPro
       } else {
         setError(res.error || 'Authentication failed. Please check your credentials.');
       }
-    }, 300);
+    } catch (err) {
+      console.error('Admin sign-in error:', err);
+      setError('Authentication failed. Please check your credentials.');
+      setIsLoading(false);
+    }
   };
 
-  const handleUpdatePassword = (e: React.FormEvent) => {
+  const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -66,20 +70,24 @@ export function AdminAuthModal({ isOpen, onClose, onSuccess }: AdminAuthModalPro
       return;
     }
 
-    // Authenticate email first
-    const res = signInAdmin(email, password);
-    if (!res.success) {
-      setError(res.error || 'Authentication failed. Please verify your current email and password.');
-      return;
-    }
+    try {
+      const res = await signInAdmin(email, password);
+      if (!res.success) {
+        setError(res.error || 'Authentication failed. Please verify your current email and password.');
+        return;
+      }
 
-    setStoredPassword(newPassword);
-    setPassChangeSuccess(true);
-    setPassword(newPassword);
-    setTimeout(() => {
-      setIsChangingPass(false);
-      setPassChangeSuccess(false);
-    }, 1500);
+      setStoredPassword(newPassword);
+      setPassChangeSuccess(true);
+      setPassword(newPassword);
+      setTimeout(() => {
+        setIsChangingPass(false);
+        setPassChangeSuccess(false);
+      }, 1500);
+    } catch (err) {
+      console.error('Admin password change error:', err);
+      setError('Authentication failed. Please verify your current email and password.');
+    }
   };
 
   return (
