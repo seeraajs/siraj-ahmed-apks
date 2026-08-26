@@ -15,10 +15,11 @@ import {
   Terminal
 } from 'lucide-react';
 import { Application, ViewState, AppSortOption, AdminUser } from './types';
-import { addDoc, collection, deleteDoc, doc, increment, onSnapshot, updateDoc } from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
+import { addDoc, collection, deleteDoc, doc, increment, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth, db } from '../lib/firebase';
-import { getCurrentAdmin, isAdminEmail, signOutAdmin, subscribeToAdminAuth } from './utils/auth';
+
+import { getCurrentAdmin, isAdminEmail, signOutAdmin } from './utils/auth';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { AppCard } from './components/AppCard';
@@ -45,10 +46,6 @@ export default function App() {
     return null;
   };
 
-  useEffect(() => {
-    testFirebaseConnection();
-  }, []);
-
   const [view, setView] = useState<ViewState>(() => {
     try {
       if (window.location.pathname.replace(/\/$/, '') === '/admin') {
@@ -62,55 +59,98 @@ export default function App() {
     return 'home';
   });
 
-  const [adminUser, setAdminUser] = useState<AdminUser | null>(() => getCurrentAdmin());
+  const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [apps, setApps] = useState<Application[]>([]);
   const [firebaseLoading, setFirebaseLoading] = useState(true);
   const [firebaseError, setFirebaseError] = useState<string | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [sortOption, setSortOption] = useState<AppSortOption>('latest');
+  const [selectedApp, setSelectedApp] = useState<Application | null>(null);
+  const [downloadingApp, setDownloadingApp] = useState<Application | null>(null);
+  const [editingApp, setEditingApp] = useState<Application | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = subscribeToAdminAuth((user) => {
-      setAdminUser(user);
+    testFirebaseConnection();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setAuthReady(true);
+
+      if (!firebaseUser) {
+        setAdminUser(null);
+        setFirebaseError(null);
+        return;
+      }
+
+      if (!isAdminEmail(firebaseUser.email)) {
+        console.warn('Authenticated Firebase user is not the authorized admin:', firebaseUser.email);
+        void signOut(auth);
+        setAdminUser(null);
+        setFirebaseError('You are not authorized to access the admin application repository.');
+        return;
+      }
+
+      const nextAdmin: AdminUser = {
+        email: firebaseUser.email?.trim().toLowerCase() || '',
+        name: firebaseUser.displayName || 'Siraj Ahmed',
+        signedInAt: Date.now(),
+      };
+
+      setAdminUser(nextAdmin);
+      try {
+        localStorage.setItem('sat_admin_session_v1', JSON.stringify(nextAdmin));
+      } catch (error) {
+        console.warn('Could not persist admin auth state:', error);
+      }
     });
 
     return () => unsubscribe();
   }, []);
 
   useEffect(() => {
-    const applicationsRef = collection(db, 'applications');
+  if (!authReady) return;
 
-    const unsubscribe = onSnapshot(
-      applicationsRef,
-      (snapshot) => {
-        const loadedApps = snapshot.docs.map((docSnap) => ({
-          id: docSnap.id,
-          ...docSnap.data(),
-        })) as Application[];
+  const applicationsQuery = query(
+    collection(db, 'applications'),
+    where('published', '==', true)
+  );
 
-        setApps(loadedApps);
-        setFirebaseLoading(false);
-        setFirebaseError(null);
-      },
-      (error) => {
-        console.error('Firestore applications listener failed:', error);
-        setFirebaseError('Unable to load applications from the repository.');
-        setFirebaseLoading(false);
+  const unsubscribe = onSnapshot(
+    applicationsQuery,
+    (snapshot) => {
+      const loadedApps = snapshot.docs.map((docSnap) => ({
+        id: docSnap.id,
+        ...docSnap.data(),
+      })) as Application[];
+
+      setApps(loadedApps);
+      setFirebaseLoading(false);
+      setFirebaseError(null);
+    },
+    (error) => {
+      console.error('Firestore applications listener failed:', error);
+
+      if (error?.code === 'permission-denied') {
+        setFirebaseError(
+          'You are not authorized to access the application repository.'
+        );
+      } else {
+        setFirebaseError(
+          'Unable to load applications from the repository.'
+        );
       }
-    );
 
-    return () => unsubscribe();
-  }, []);
+      setFirebaseLoading(false);
+    }
+  );
 
-  // Search & Filter state
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [sortOption, setSortOption] = useState<AppSortOption>('latest');
-
-  // Modal states
-  const [selectedApp, setSelectedApp] = useState<Application | null>(null);
-  const [downloadingApp, setDownloadingApp] = useState<Application | null>(null);
-  const [editingApp, setEditingApp] = useState<Application | null>(null);
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  return () => unsubscribe();
+}, [authReady]);
 
   // Sync view state with browser navigation / hash.
   // A private '#admin-login' hash is treated as a modal trigger, not a public view.

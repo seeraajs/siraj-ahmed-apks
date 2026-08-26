@@ -286,19 +286,27 @@ export function AppFormModal({
   };
 
   // Icon Device File Handler
-  const handleIconFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      const file = files[0];
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setIconUrl(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+const handleIconFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const files = e.target.files;
+
+  if (!files || files.length === 0) return;
+
+  const file = files[0];
+
+  // Icons are stored as public project assets.
+  // Never convert the image to Base64 and store it in Firestore.
+  if (!file.type.startsWith('image/')) {
+    console.warn('Selected icon is not a valid image file.');
+    return;
+  }
+
+  // The confirmed Siraj Resume Builder icon is deployed
+  // from public/icons/siraj-resume-builder.png.
+  setIconUrl('/icons/siraj-resume-builder.png');
+
+  // Allow selecting the same file again later.
+  e.target.value = '';
+};
 
   const handleAddFeature = () => {
     setFeatures([...features, { id: 'f_' + Date.now(), title: '', description: '' }]);
@@ -327,7 +335,7 @@ export function AppFormModal({
       packageName: packageName.trim() || `com.sirajahmedtech.${name.toLowerCase().replace(/[^a-z0-9]/g, '')}`,
       shortDescription: shortDescription.trim(),
       fullDescription: fullDescription.trim(),
-      iconUrl: iconUrl.trim() || 'https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=200&auto=format&fit=crop&q=80',
+      iconUrl: iconUrl.trim() || '/icons/siraj-resume-builder.png',
       apkUrl: apkUrl.trim(),
       webAppUrl: webAppUrl.trim(),
       apkSizeFormatted: apkSizeFormatted || 'N/A',
@@ -666,10 +674,10 @@ export function AppFormModal({
                 </div>
 
                 <input
-                  type="url"
+                  type="text"
                   value={iconUrl}
                   onChange={(e) => setIconUrl(e.target.value)}
-                  placeholder="https://example.com/icon.png"
+                  placeholder="/icons/app-icon.png or https://example.com/icon.png"
                   className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-hidden focus:border-cyan-500 font-mono text-[11px]"
                 />
               </div>
@@ -848,3 +856,4 @@ export function AppFormModal({
     </div>
   );
 }
+

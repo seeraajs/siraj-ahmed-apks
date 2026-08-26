@@ -4,6 +4,7 @@ import { AdminUser } from '../types';
 
 export const AUTHORIZED_ADMIN_EMAILS = [
   'seeraajs1@gmail.com',
+  'seeraajs@gmail.com',
 ];
 
 const AUTH_STORAGE_KEY = 'sat_admin_session_v1';

@@ -142,7 +142,7 @@ export function AppCard({
             className="flex-1 min-w-[150px] py-2.5 px-3 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-cyan-400 to-blue-400 hover:from-cyan-300 hover:to-blue-300 shadow-md shadow-cyan-950/20 flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] cursor-pointer"
           >
             <Download className={`w-3.5 h-3.5 ${downloading ? 'animate-bounce' : ''}`} />
-            <span>{downloading ? 'Starting...' : `Download APK ${app.apkSizeFormatted ? `(${app.apkSizeFormatted})` : ''}`}</span>
+            <span>{downloading ? 'Starting...' : `Download for Android ${app.apkSizeFormatted ? `(${app.apkSizeFormatted})` : ''}`}</span>
           </button>
 
           {hasValidWebAppUrl && (
@@ -150,10 +150,10 @@ export function AppCard({
               type="button"
               onClick={handleWebAppClick}
               className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors cursor-pointer"
-              aria-label={`Open ${app.name} web app`}
+              aria-label={`Use ${app.name} on iOS or Windows`}
             >
               <Globe className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Web App</span>
+              <span className="hidden sm:inline">Use on iOS / Windows</span>
               <span className="sm:hidden">PWA</span>
             </button>
           )}
