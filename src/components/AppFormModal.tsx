@@ -286,27 +286,27 @@ export function AppFormModal({
   };
 
   // Icon Device File Handler
-const handleIconFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const files = e.target.files;
+  const handleIconFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
 
-  if (!files || files.length === 0) return;
+    if (!files || files.length === 0) return;
 
-  const file = files[0];
+    const file = files[0];
 
-  // Icons are stored as public project assets.
-  // Never convert the image to Base64 and store it in Firestore.
-  if (!file.type.startsWith('image/')) {
-    console.warn('Selected icon is not a valid image file.');
-    return;
-  }
+    if (!file.type.startsWith('image/')) {
+      console.warn('Selected icon is not a valid image file.');
+      return;
+    }
 
-  // The confirmed Siraj Resume Builder icon is deployed
-  // from public/icons/siraj-resume-builder.png.
-  setIconUrl('/icons/siraj-resume-builder.png');
+    // Use the actual image selected by the administrator.
+    // Create a temporary local preview URL so the exact selected
+    // image is displayed and saved with the app data.
+    const previewUrl = URL.createObjectURL(file);
+    setIconUrl(previewUrl);
 
-  // Allow selecting the same file again later.
-  e.target.value = '';
-};
+    // Allow selecting the same file again later.
+    e.target.value = '';
+  };
 
   const handleAddFeature = () => {
     setFeatures([...features, { id: 'f_' + Date.now(), title: '', description: '' }]);
@@ -335,7 +335,7 @@ const handleIconFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       packageName: packageName.trim() || `com.sirajahmedtech.${name.toLowerCase().replace(/[^a-z0-9]/g, '')}`,
       shortDescription: shortDescription.trim(),
       fullDescription: fullDescription.trim(),
-      iconUrl: iconUrl.trim() || '/icons/siraj-resume-builder.png',
+      iconUrl: iconUrl.trim(),
       apkUrl: apkUrl.trim(),
       webAppUrl: webAppUrl.trim(),
       apkSizeFormatted: apkSizeFormatted || 'N/A',
