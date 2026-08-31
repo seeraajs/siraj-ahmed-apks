@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Application, AppFeature, AppScreenshot } from '../types';
 import { generateDescriptionAndFeatures } from '../utils/textGenerator';
+import { uploadAppIcon } from '../../lib/storage';
 
 interface AppFormModalProps {
   app: Application | null;
@@ -286,27 +287,45 @@ export function AppFormModal({
   };
 
   // Icon Device File Handler
-  const handleIconFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
+  const handleIconFileInputChange = async (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const files = e.target.files;
 
-    if (!files || files.length === 0) return;
+  if (!files || files.length === 0) return;
 
-    const file = files[0];
+  const file = files[0];
 
-    if (!file.type.startsWith('image/')) {
-      console.warn('Selected icon is not a valid image file.');
-      return;
-    }
+  if (!file.type.startsWith('image/')) {
+    console.warn('Selected icon is not a valid image file.');
+    e.target.value = '';
+    return;
+  }
 
-    // Use the actual image selected by the administrator.
-    // Create a temporary local preview URL so the exact selected
-    // image is displayed and saved with the app data.
-    const previewUrl = URL.createObjectURL(file);
-    setIconUrl(previewUrl);
+  try {
+    const slugForUpload =
+      slug ||
+      name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '') ||
+      'app';
 
+    console.log('Uploading app icon to Firebase Storage...');
+
+    const permanentIconUrl = await uploadAppIcon(file, slugForUpload);
+
+    console.log('App icon uploaded successfully:', permanentIconUrl);
+
+    setIconUrl(permanentIconUrl);
+  } catch (error) {
+    console.error('Failed to upload app icon:', error);
+    alert('Failed to upload the app icon. Please try again.');
+  } finally {
     // Allow selecting the same file again later.
     e.target.value = '';
-  };
+  }
+};
 
   const handleAddFeature = () => {
     setFeatures([...features, { id: 'f_' + Date.now(), title: '', description: '' }]);
