@@ -1,4 +1,4 @@
-export interface AppFeature {
+﻿export interface AppFeature {
   id: string;
   title: string;
   description?: string;
@@ -41,10 +41,11 @@ export interface Application {
 }
 
 export type AppSortOption = 'latest' | 'downloads' | 'rating' | 'likes';
-export type ViewState = 'home' | 'apps' | 'app-detail' | 'about' | 'admin';
+export type ViewState = 'home' | 'apps' | 'app-detail' | 'about' | 'privacy' | 'terms' | 'contact' | 'admin';
 
 export interface AdminUser {
   email: string;
   name: string;
   signedInAt: number;
 }
+

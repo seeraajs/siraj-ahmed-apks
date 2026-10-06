@@ -1,16 +1,16 @@
-import React from 'react';
-import { 
-  Smartphone, 
-  ShieldCheck, 
-  Cpu, 
-  Zap, 
-  Lock, 
-  Terminal, 
-  CheckCircle2, 
-  Mail, 
-  Globe, 
-  Code, 
-  Layers 
+﻿import React from 'react';
+import {
+  Smartphone,
+  ShieldCheck,
+  Cpu,
+  Zap,
+  Lock,
+  Terminal,
+  CheckCircle2,
+  Mail,
+  Globe,
+  Code,
+  Layers
 } from 'lucide-react';
 import { ViewState } from '../types';
 
@@ -31,13 +31,16 @@ export function AboutView({ onNavigate }: AboutViewProps) {
 
         <div className="space-y-2">
           <span className="text-xs font-mono font-bold uppercase tracking-widest text-cyan-400">
-            Independent Android Engineering
+            Independent Software Development
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             About Siraj Ahmed Tech
           </h1>
           <p className="text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            Pioneering clean, standalone Android applications with direct APK distribution, zero telemetry trackers, and hardware-accelerated local performance.
+            Siraj Ahmed Tech is an independent software hub for applications
+            developed and maintained by Siraj Ahmed, providing application
+            information, direct Android APK downloads, and web application
+            access where available.
           </p>
         </div>
       </div>
@@ -49,10 +52,13 @@ export function AboutView({ onNavigate }: AboutViewProps) {
             <ShieldCheck className="w-5 h-5" />
           </div>
           <h3 className="text-base font-bold text-white">
-            Pure Standalone APK Distribution
+            Direct Application Distribution
           </h3>
           <p className="text-xs text-slate-300 leading-relaxed">
-            Modern mobile app stores often mandate intrusive proprietary SDKs, ad-trackers, and complex background analytics. Siraj Ahmed Tech distributes pure, self-contained APKs directly to users with verifiable SHA-256 signatures.
+            Published Android applications can be distributed directly as APK
+            packages. Application pages provide available version information,
+            compatibility details, file information, and release notes to help
+            visitors understand what they are downloading.
           </p>
         </div>
 
@@ -61,10 +67,13 @@ export function AboutView({ onNavigate }: AboutViewProps) {
             <Lock className="w-5 h-5" />
           </div>
           <h3 className="text-base font-bold text-white">
-            Privacy-First &amp; Zero Tracking
+            Privacy-Conscious Approach
           </h3>
           <p className="text-xs text-slate-300 leading-relaxed">
-            Every application is architected around local-first storage (SQLite/Keystore) with zero remote analytics telemetry. Your device and your data remain sovereign at all times.
+            We aim to keep the website's data collection focused on the
+            functionality it provides. The site may process application
+            information, download counts, ratings, likes, and administrator
+            account information as described in the Privacy Policy.
           </p>
         </div>
 
@@ -73,10 +82,13 @@ export function AboutView({ onNavigate }: AboutViewProps) {
             <Cpu className="w-5 h-5" />
           </div>
           <h3 className="text-base font-bold text-white">
-            Native Android Performance
+            Practical Application Development
           </h3>
           <p className="text-xs text-slate-300 leading-relaxed">
-            Leveraging modern Android architecture components, Kotlin coroutines, and native C++ DSP pipelines to deliver instant boot times, low memory footprints, and negligible battery drain.
+            Projects are developed with a focus on useful features,
+            straightforward interfaces, responsive design, and practical
+            everyday use. Technologies and implementation details may differ
+            between individual applications.
           </p>
         </div>
 
@@ -85,10 +97,13 @@ export function AboutView({ onNavigate }: AboutViewProps) {
             <Terminal className="w-5 h-5" />
           </div>
           <h3 className="text-base font-bold text-white">
-            Transparent Manifests &amp; Permissions
+            Clear Application Information
           </h3>
           <p className="text-xs text-slate-300 leading-relaxed">
-            We list exact package identifiers, min/target SDK versions, required OS permissions, and complete changelogs for every published release.
+            Where information is available, application pages can include
+            package identifiers, Android compatibility, version information,
+            APK file details, screenshots, descriptions, features, and
+            changelogs.
           </p>
         </div>
       </div>
@@ -98,13 +113,13 @@ export function AboutView({ onNavigate }: AboutViewProps) {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <span className="text-xs font-mono text-cyan-400 uppercase tracking-wider font-semibold">
-              Software Architect &amp; Maintainer
+              Developer &amp; Maintainer
             </span>
             <h2 className="text-2xl font-bold text-white">
               Siraj Ahmed
             </h2>
             <p className="text-xs text-slate-400 font-mono">
-              Independent Android Developer &amp; Systems Engineer
+              Independent Software Developer
             </p>
           </div>
 
@@ -119,18 +134,59 @@ export function AboutView({ onNavigate }: AboutViewProps) {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-800 text-xs">
           <div className="space-y-1">
-            <span className="text-slate-400 font-mono text-[11px]">Primary Focus</span>
-            <p className="font-semibold text-slate-200">Android Security &amp; Native Utilities</p>
+            <span className="text-slate-400 font-mono text-[11px]">
+              Primary Focus
+            </span>
+            <p className="font-semibold text-slate-200">
+              Independent Applications
+            </p>
           </div>
+
           <div className="space-y-1">
-            <span className="text-slate-400 font-mono text-[11px]">Architecture</span>
-            <p className="font-semibold text-slate-200">Kotlin, C++ NDK, Jetpack Compose</p>
+            <span className="text-slate-400 font-mono text-[11px]">
+              Platform
+            </span>
+            <p className="font-semibold text-slate-200">
+              Android &amp; Web
+            </p>
           </div>
+
           <div className="space-y-1">
-            <span className="text-slate-400 font-mono text-[11px]">Distribution Hub</span>
-            <p className="font-semibold text-cyan-400 font-mono">sirajahmedtech.com</p>
+            <span className="text-slate-400 font-mono text-[11px]">
+              Distribution
+            </span>
+            <p className="font-semibold text-cyan-400 font-mono">
+              Siraj Ahmed Tech
+            </p>
           </div>
         </div>
+      </div>
+
+      {/* Legal Navigation */}
+      <div className="flex flex-wrap justify-center gap-4 text-xs font-mono">
+        <button
+          type="button"
+          onClick={() => onNavigate('privacy')}
+          className="text-slate-400 hover:text-cyan-400 transition-colors cursor-pointer"
+        >
+          Privacy Policy
+        </button>
+
+        <button
+          type="button"
+          onClick={() => onNavigate('terms')}
+          className="text-slate-400 hover:text-cyan-400 transition-colors cursor-pointer"
+        >
+          Terms &amp; Conditions
+        </button>
+
+        <button
+          type="button"
+          onClick={() => onNavigate('contact')}
+          className="text-slate-400 hover:text-cyan-400 transition-colors cursor-pointer"
+        >
+          Contact
+        </button>
       </div>
     </div>
   );

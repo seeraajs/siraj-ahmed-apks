@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Smartphone, ShieldCheck, Github, Globe, Heart, CheckCircle2, Lock } from 'lucide-react';
 import { ViewState } from '../types';
 
@@ -25,17 +25,17 @@ export function Footer({ onNavigate }: FooterProps) {
             </div>
 
             <p className="text-slate-400 text-xs leading-relaxed max-w-md">
-              Official distribution repository for independent Android software by Siraj Ahmed. Providing direct, verified standalone APK packages with zero bloatware, transparent manifests, and offline-first security.
+              Independent app distribution hub for applications developed and maintained by Siraj Ahmed. Providing direct Android APK downloads, application information, and web application access where available.
             </p>
 
             <div className="flex items-center gap-4 text-slate-400 text-xs">
               <span className="flex items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Verified Standalone Packages</span>
+                <span>Direct APK Downloads</span>
               </span>
               <span className="flex items-center gap-1">
                 <Lock className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Zero Telemetry Policy</span>
+                <span>Privacy-Conscious Approach</span>
               </span>
             </div>
           </div>
@@ -73,22 +73,49 @@ export function Footer({ onNavigate }: FooterProps) {
                   About Siraj Ahmed Tech
                 </button>
               </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('privacy')}
+                  className="hover:text-cyan-400 transition-colors cursor-pointer"
+                >
+                  Privacy Policy
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('terms')}
+                  className="hover:text-cyan-400 transition-colors cursor-pointer"
+                >
+                  Terms &amp; Conditions
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('contact')}
+                  className="hover:text-cyan-400 transition-colors cursor-pointer"
+                >
+                  Contact
+                </button>
+              </li>
             </ul>
           </div>
 
           {/* Column 3: Android Compatibility */}
           <div className="space-y-3">
             <h4 className="font-mono font-semibold uppercase tracking-wider text-slate-200 text-xs">
-              Android OS Support
+              Application Compatibility
             </h4>
             <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
               <div className="flex items-center justify-between text-[11px] font-mono">
                 <span className="text-slate-400">Target Platform</span>
-                <span className="text-cyan-400 font-semibold">ARM64 &amp; x86_64</span>
+                <span className="text-cyan-400 font-semibold">See app details</span>
               </div>
               <div className="flex items-center justify-between text-[11px] font-mono">
                 <span className="text-slate-400">Supported OS</span>
-                <span className="text-emerald-400 font-semibold">Android 8.0 - 15+</span>
+                <span className="text-emerald-400 font-semibold">See app details</span>
               </div>
               <div className="flex items-center justify-between text-[11px] font-mono">
                 <span className="text-slate-400">Package Type</span>
@@ -104,7 +131,7 @@ export function Footer({ onNavigate }: FooterProps) {
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1 text-emerald-400">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Standalone Distribution Server Live</span>
+              <span>Direct Distribution Available</span>
             </span>
           </div>
         </div>

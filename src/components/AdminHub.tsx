@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { 
   Plus, 
   Trash2, 
@@ -177,7 +177,7 @@ export function AdminHub({
             <span>Security Status</span>
             <ShieldCheck className="w-4 h-4 text-cyan-400" />
           </div>
-          <p className="text-2xl font-extrabold text-emerald-400 font-mono">100% Verified</p>
+          <p className="text-2xl font-extrabold text-emerald-400 font-mono">Package Information</p>
           <p className="text-[11px] text-slate-400">Direct standalone APK packages</p>
         </div>
       </div>
@@ -397,3 +397,4 @@ export function AdminHub({
     </div>
   );
 }
+

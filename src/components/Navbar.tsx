@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { 
   Smartphone, 
   Layers, 
@@ -43,7 +43,7 @@ export function Navbar({
               </span>
             </div>
             <p className="text-[11px] text-slate-400 font-mono tracking-tight hidden sm:block">
-              Verified Android Applications Repository
+              Android Applications Repository
             </p>
           </div>
         </button>
@@ -99,3 +99,4 @@ export function Navbar({
     </header>
   );
 }
+

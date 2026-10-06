@@ -1,4 +1,4 @@
-import { testFirebaseConnection } from "./firebaseTest";
+﻿import { testFirebaseConnection } from "./firebaseTest";
 import React, { useState, useEffect } from 'react';
 import { 
   Download, 
@@ -28,6 +28,9 @@ import { DownloadToast } from './components/DownloadToast';
 import { AdminHub } from './components/AdminHub';
 import { AppFormModal } from './components/AppFormModal';
 import { AboutView } from './components/AboutView';
+import { PrivacyPolicyView } from './components/PrivacyPolicyView';
+import { TermsView } from './components/TermsView';
+import { ContactView } from './components/ContactView';
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { PwaInstallPrompt } from './components/PwaInstallPrompt';
 
@@ -39,7 +42,7 @@ export default function App() {
       return null;
     }
 
-    if (['home', 'apps', 'about', 'admin'].includes(normalizedHash)) {
+    if (['home', 'apps', 'about', 'privacy', 'terms', 'contact', 'admin'].includes(normalizedHash)) {
       return normalizedHash as ViewState;
     }
 
@@ -458,7 +461,7 @@ export default function App() {
 
       {firebaseLoading && (
         <div className="mx-auto w-full max-w-5xl px-4 pt-4 text-xs text-slate-400">
-          Loading applications from Firebase…
+          Loading applications from Firebaseâ€¦
         </div>
       )}
 
@@ -481,7 +484,7 @@ export default function App() {
                 </h1>
 
                 <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
-                  Siraj Ahmed Tech delivers standalone, optimized Android applications directly. Browse verified software releases, inspect package manifests and SHA-256 checksums, and download official APKs without third-party bloat.
+                  Siraj Ahmed Tech provides standalone Android applications directly. Browse published software releases, inspect package information and SHA-256 checksums, and download APKs directly.
                 </p>
 
                 <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -532,7 +535,7 @@ export default function App() {
                       Fast &amp; Unbloated
                     </h4>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      Streamlined codebases with zero tracking or unnecessary permissions.
+                      Designed to avoid unnecessary data collection and permissions where applicable.
                     </p>
                   </div>
                 </div>
@@ -559,7 +562,7 @@ export default function App() {
                 <div>
                   <div className="flex items-center gap-2 text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider mb-1">
                     <Smartphone className="w-4 h-4" />
-                    <span>Official Releases</span>
+                    <span>Published Releases</span>
                   </div>
                   <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                     Featured Android Apps
@@ -582,7 +585,7 @@ export default function App() {
                   <Smartphone className="w-10 h-10 text-slate-600 mx-auto" />
                   <h3 className="font-bold text-base text-white">No applications published yet</h3>
                   <p className="text-xs text-slate-400 max-w-sm mx-auto">
-                    New official APK releases will appear here once uploaded to the repository.
+                    New APK releases will appear here once published to the repository.
                   </p>
                 </div>
               ) : (
@@ -611,7 +614,7 @@ export default function App() {
               <div>
                 <div className="flex items-center gap-2 text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider mb-1">
                   <Layers className="w-4 h-4" />
-                  <span>Verified Packages</span>
+                  <span>Application Packages</span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                   All Applications Catalog
@@ -682,7 +685,7 @@ export default function App() {
                 </h3>
                 <p className="text-xs text-slate-400 max-w-sm mx-auto">
                   {publishedApps.length === 0
-                    ? 'New official APK releases will appear in this catalog once uploaded.'
+                    ? 'New APK releases will appear in this catalog once published.'
                     : `No APK packages match "${searchQuery}". Try adjusting your search or category filters.`}
                 </p>
                 {publishedApps.length > 0 && (
@@ -719,6 +722,27 @@ export default function App() {
         {view === 'about' && (
           <div className="animate-in fade-in duration-300">
             <AboutView onNavigate={(v) => navigateTo(v)} />
+          </div>
+        )}
+
+        {/* VIEW: TERMS */}
+        {view === 'terms' && (
+          <div className="animate-in fade-in duration-300">
+            <TermsView onNavigate={(v) => navigateTo(v)} />
+          </div>
+        )}
+
+        {/* VIEW: CONTACT */}
+        {view === 'contact' && (
+          <div className="animate-in fade-in duration-300">
+            <ContactView onNavigate={(v) => navigateTo(v)} />
+          </div>
+        )}
+
+        {/* VIEW: PRIVACY POLICY */}
+        {view === 'privacy' && (
+          <div className="animate-in fade-in duration-300">
+            <PrivacyPolicyView onNavigate={(v) => navigateTo(v)} />
           </div>
         )}
 
@@ -790,3 +814,7 @@ export default function App() {
     </div>
   );
 }
+
+
+
+

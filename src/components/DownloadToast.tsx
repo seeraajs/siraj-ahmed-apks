@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Download, CheckCircle2, ShieldCheck, X } from 'lucide-react';
 import { Application } from '../types';
 
@@ -23,7 +23,7 @@ export function DownloadToast({ app, onClose }: DownloadToastProps) {
 
           <div className="space-y-1">
             <div className="flex items-center gap-1.5 text-xs font-semibold text-white">
-              <span>Downloading Official APK</span>
+              <span>Downloading APK</span>
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
             </div>
             <p className="text-xs text-slate-300 font-mono font-medium">
@@ -46,7 +46,7 @@ export function DownloadToast({ app, onClose }: DownloadToastProps) {
 
       <div className="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-[10px] font-mono text-slate-400">
         <span className="flex items-center gap-1 text-emerald-400">
-          <ShieldCheck className="w-3 h-3" /> Checksum Verified
+          <ShieldCheck className="w-3 h-3" /> SHA-256 Checksum Available
         </span>
         <span className="truncate max-w-[180px]">
           {app.packageName}
@@ -55,3 +55,4 @@ export function DownloadToast({ app, onClose }: DownloadToastProps) {
     </div>
   );
 }
+

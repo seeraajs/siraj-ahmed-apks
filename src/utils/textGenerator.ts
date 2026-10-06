@@ -1,4 +1,4 @@
-import { AppFeature } from '../types';
+﻿import { AppFeature } from '../types';
 
 interface GeneratedContent {
   fullDescription: string;
@@ -51,7 +51,7 @@ export function generateDescriptionAndFeatures(
 
   switch (domain) {
     case 'education':
-      fullDescription = `${name} is an interactive educational software designed to elevate your learning process. ${cleanSummary}\n\nEngineered with an intuitive layout and focused user interface, it provides comprehensive study tools, structured practice modules, and instant performance feedback to help you master new concepts effectively.`;
+      fullDescription = `${name} is an interactive educational software designed to elevate your learning process. ${cleanSummary}\n\nEngineered with an intuitive layout and focused user interface, it provides comprehensive study tools, structured practice modules, and timely performance feedback to help you master new concepts effectively.`;
       features = [
         {
           id: `feat_${timestamp}_1`,
@@ -96,14 +96,14 @@ export function generateDescriptionAndFeatures(
         },
         {
           id: `feat_${timestamp}_4`,
-          title: 'Zero Background Battery Drain',
+          title: 'Battery-Aware Design',
           description: 'Optimized sensor handling and lightweight local database for extended device battery life.',
         },
       ];
       break;
 
     case 'finance':
-      fullDescription = `${name} is a financial management tool crafted for complete financial transparency. ${cleanSummary}\n\nFeaturing an encrypted local storage engine, it helps you budget smartly, categorize cash flow, and visualize expenditure habits without compromising your personal privacy.`;
+      fullDescription = `${name} is a financial management tool crafted for complete financial transparency. ${cleanSummary}\n\nFeaturing local data storage, it helps you budget smartly, categorize cash flow, and visualize expenditure habits without compromising your personal privacy.`;
       features = [
         {
           id: `feat_${timestamp}_1`,
@@ -117,8 +117,8 @@ export function generateDescriptionAndFeatures(
         },
         {
           id: `feat_${timestamp}_3`,
-          title: 'Encrypted Offline Database',
-          description: 'All financial data is stored locally on your device with zero cloud tracking.',
+          title: 'Local Data Storage',
+          description: 'Financial data handling is designed around local storage where supported.',
         },
         {
           id: `feat_${timestamp}_4`,
@@ -129,33 +129,33 @@ export function generateDescriptionAndFeatures(
       break;
 
     case 'security':
-      fullDescription = `${name} is a privacy-centric security application engineered to protect your digital identity and device data. ${cleanSummary}\n\nDesigned with strict privacy standards, zero telemetry, and strong cryptographic protocols, it delivers peace of mind and robust defenses against modern mobile security threats.`;
+      fullDescription = `${name} is a security application with privacy-conscious features engineered to protect your digital identity and device data. ${cleanSummary}\n\nDesigned with privacy-conscious principles and appropriate security practices, it provides security-focused features for mobile devices.`;
       features = [
         {
           id: `feat_${timestamp}_1`,
-          title: 'End-to-End Cryptographic Security',
-          description: 'Industry-standard encryption securing your credentials, data packets, and device storage.',
+          title: 'Cryptographic Security Features',
+          description: 'Encryption features for credentials, data, and device storage where supported.',
         },
         {
           id: `feat_${timestamp}_2`,
-          title: 'Zero-Telemetry Architecture',
-          description: 'No third-party trackers, advertisements, or background telemetry logging.',
+          title: 'Privacy-Conscious Architecture',
+          description: 'Designed to minimize unnecessary data collection and background activity.',
         },
         {
           id: `feat_${timestamp}_3`,
-          title: 'Real-Time Threat Detection',
-          description: 'Monitors permissions and suspicious activity to safeguard your privacy.',
+          title: 'Threat Monitoring Features',
+          description: 'Helps monitor permissions and suspicious activity where supported.',
         },
         {
           id: `feat_${timestamp}_4`,
-          title: 'Biometric & Master Key Lock',
-          description: 'Quick unlocking via fingerprint, face unlock, or strong local master passphrase.',
+          title: 'Biometric & Local Lock Options',
+          description: 'Supports fingerprint, face unlock, or local passphrase options where available.',
         },
       ];
       break;
 
     case 'productivity':
-      fullDescription = `${name} is a high-efficiency productivity tool engineered to streamline your workflow and daily management. ${cleanSummary}\n\nDesigned with a distraction-free interface, it empowers you to organize tasks, capture ideas instantly, and maintain momentum without friction.`;
+      fullDescription = `${name} is a high-efficiency productivity tool engineered to streamline your workflow and daily management. ${cleanSummary}\n\nDesigned with a distraction-free interface, it empowers you to organize tasks, capture ideas efficiently, and maintain momentum without friction.`;
       features = [
         {
           id: `feat_${timestamp}_1`,
@@ -165,7 +165,7 @@ export function generateDescriptionAndFeatures(
         {
           id: `feat_${timestamp}_2`,
           title: 'Smart Reminders & Notifications',
-          description: 'Customizable alerts ensuring critical deadlines and important milestones are never missed.',
+          description: 'Customizable alerts to help you keep track of critical deadlines and important milestones.',
         },
         {
           id: `feat_${timestamp}_3`,
@@ -174,19 +174,19 @@ export function generateDescriptionAndFeatures(
         },
         {
           id: `feat_${timestamp}_4`,
-          title: '100% Offline Availability',
-          description: 'Work seamlessly with full functionality even in airplane mode or low connectivity.',
+          title: 'Offline Access',
+          description: 'Supports offline access and selected features during low connectivity where applicable.',
         },
       ];
       break;
 
     case 'sports':
-      fullDescription = `${name} is a dedicated sports companion delivering dynamic data, fixture tracking, and comprehensive stats. ${cleanSummary}\n\nStay connected to live scores, match analyses, and team standings with lightning-fast updates and customizable alerts.`;
+      fullDescription = `${name} is a dedicated sports companion delivering dynamic data, fixture tracking, and comprehensive stats. ${cleanSummary}\n\nStay connected to live scores, match analyses, and team standings with timely updates and customizable alerts.`;
       features = [
         {
           id: `feat_${timestamp}_1`,
           title: 'Live Score & Event Tracking',
-          description: 'Instant updates on active matches, match timelines, and key highlights.',
+          description: 'Updates on active matches, match timelines, and key highlights.',
         },
         {
           id: `feat_${timestamp}_2`,
@@ -196,12 +196,12 @@ export function generateDescriptionAndFeatures(
         {
           id: `feat_${timestamp}_3`,
           title: 'Custom Team & Match Alerts',
-          description: 'Select your favorite clubs and tournaments for instant match notifications.',
+          description: 'Select your favorite clubs and tournaments for match notifications.',
         },
         {
           id: `feat_${timestamp}_4`,
           title: 'Lightweight & Fast Refresh',
-          description: 'Minimal bandwidth consumption with ultra-fast data synchronization.',
+          description: 'Designed for practical bandwidth usage and timely data synchronization.',
         },
       ];
       break;
@@ -226,18 +226,18 @@ export function generateDescriptionAndFeatures(
         },
         {
           id: `feat_${timestamp}_4`,
-          title: 'Privacy-First Local Storage',
-          description: 'Your personal lifestyle logs remain private and stored strictly on your device.',
+          title: 'Local Storage Options',
+          description: 'Personal lifestyle logs can be stored locally where supported.',
         },
       ];
       break;
 
     case 'media':
-      fullDescription = `${name} is a multimedia application offering playback controls, clean audio/video processing, and efficient library management. ${cleanSummary}\n\nBuilt for high-fidelity performance with minimal resource consumption.`;
+      fullDescription = `${name} is a multimedia application offering playback controls, clean audio/video processing, and efficient library management. ${cleanSummary}\n\nBuilt for efficient media playback and practical resource usage.`;
       features = [
         {
           id: `feat_${timestamp}_1`,
-          title: 'High-Fidelity Audio & Video Engine',
+          title: 'Audio & Video Playback',
           description: 'Crystal-clear playback supporting major formats and encoding standards.',
         },
         {
@@ -264,7 +264,7 @@ export function generateDescriptionAndFeatures(
         {
           id: `feat_${timestamp}_1`,
           title: 'Fast & Responsive Performance',
-          description: 'Optimized native execution delivering smooth animations and near-instant load times.',
+          description: 'Responsive application performance designed for smooth everyday use.',
         },
         {
           id: `feat_${timestamp}_2`,
@@ -278,8 +278,8 @@ export function generateDescriptionAndFeatures(
         },
         {
           id: `feat_${timestamp}_4`,
-          title: 'Zero Bloatware & Ad-Free Experience',
-          description: 'Pure utility software with no invasive telemetry or background data consumption.',
+          title: 'Focused Application Experience',
+          description: 'A focused utility experience with attention to unnecessary background activity and data use.',
         },
       ];
       break;
@@ -303,10 +303,13 @@ export function generateDescriptionAndFeatures(
   if (/offline|no internet|standalone/i.test(lowerSummary)) {
     features[3] = {
       id: `feat_${timestamp}_offline`,
-      title: 'Complete Offline Autonomy',
-      description: 'Operates 100% locally with zero internet connectivity required.',
+      title: 'Offline Access',
+      description: 'Supports offline use where applicable.',
     };
   }
 
   return { fullDescription, features };
 }
+
+
+
