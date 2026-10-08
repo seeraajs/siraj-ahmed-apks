@@ -1,4 +1,38 @@
-﻿export async function uploadAppIcon(
+﻿export async function uploadAppScreenshot(
+  file: File,
+  slug: string
+): Promise<string> {
+  const fileBase64 = await fileToBase64(file);
+
+  const response = await fetch('/api/upload-screenshot', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      fileName: `${slug}-screenshot-${Date.now()}.${getExtension(file.name)}`,
+      fileBase64,
+      contentType: file.type || 'image/png',
+      fileSize: file.size,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.error || 'Failed to upload app screenshot.');
+  }
+
+  if (!data?.screenshotUrl) {
+    throw new Error(
+      'GitHub screenshot upload succeeded but no screenshot URL was returned.'
+    );
+  }
+
+  return data.screenshotUrl;
+}
+
+export async function uploadAppIcon(
   file: File,
   slug: string
 ): Promise<string> {
@@ -39,14 +73,14 @@ function fileToBase64(file: File): Promise<string> {
       const result = reader.result;
 
       if (typeof result !== 'string') {
-        reject(new Error('Could not read the icon file.'));
+        reject(new Error('Could not read the file.'));
         return;
       }
 
       const base64 = result.split(',')[1];
 
       if (!base64) {
-        reject(new Error('Could not convert the icon to Base64.'));
+        reject(new Error('Could not convert the file to Base64.'));
         return;
       }
 
@@ -54,7 +88,7 @@ function fileToBase64(file: File): Promise<string> {
     };
 
     reader.onerror = () => {
-      reject(new Error('Could not read the icon file.'));
+      reject(new Error('Could not read the file.'));
     };
 
     reader.readAsDataURL(file);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, 
   Save, 
@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { Application, AppFeature, AppScreenshot } from '../types';
 import { generateDescriptionAndFeatures } from '../utils/textGenerator';
-import { uploadAppIcon } from '../../lib/storage';
+import { uploadAppIcon, uploadAppScreenshot } from '../../lib/storage';
 
 interface AppFormModalProps {
   app: Application | null;
@@ -76,6 +76,7 @@ export function AppFormModal({
   const [isDraggingApk, setIsDraggingApk] = useState(false);
   const apkFileInputRef = useRef<HTMLInputElement>(null);
   const iconFileInputRef = useRef<HTMLInputElement>(null);
+  const screenshotFileInputRef = useRef<HTMLInputElement>(null);
 
   // Load initial state or restore draft
   useEffect(() => {
@@ -327,6 +328,58 @@ export function AppFormModal({
   }
 };
 
+  const handleScreenshotFileInputChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = e.target.files;
+
+    if (!files || files.length === 0) return;
+
+    const slugForUpload =
+      slug ||
+      name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '') ||
+      'app';
+
+    try {
+      for (const file of Array.from(files)) {
+        if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+          alert(`Unsupported screenshot format: ${file.name}. Please use PNG, JPEG, or WebP.`);
+          continue;
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+          alert(`Screenshot is too large: ${file.name}. Maximum size is 10 MB.`);
+          continue;
+        }
+
+        const screenshotUrl = await uploadAppScreenshot(file, slugForUpload);
+
+        setScreenshots((current) => [
+          ...current,
+          {
+            id: `s_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+            url: screenshotUrl,
+            name: file.name,
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error('Failed to upload app screenshot:', error);
+      alert('Failed to upload one or more screenshots. Please try again.');
+    } finally {
+      e.target.value = '';
+    }
+  };
+
+  const handleRemoveScreenshot = (id: string) => {
+    setScreenshots((current) =>
+      current.filter((screenshot) => screenshot.id !== id)
+    );
+  };
+
   const handleAddFeature = () => {
     setFeatures([...features, { id: 'f_' + Date.now(), title: '', description: '' }]);
   };
@@ -420,7 +473,7 @@ export function AppFormModal({
           <div className="bg-cyan-950/40 border-b border-cyan-800/40 px-6 py-2 flex items-center justify-between gap-3 text-xs text-cyan-300">
             <div className="flex items-center gap-2 font-mono text-[11px]">
               <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-              <span>Unsubmitted draft restored — your typed details have been preserved!</span>
+              <span>Unsubmitted draft restored â€” your typed details have been preserved!</span>
             </div>
             <button
               type="button"
@@ -644,7 +697,7 @@ export function AppFormModal({
 
     {webAppUrl.trim() && (
       <div className="mt-2 text-xs text-emerald-400">
-        ✓ Web App URL added
+        âœ“ Web App URL added
       </div>
     )}
   </div>
@@ -702,6 +755,81 @@ export function AppFormModal({
               </div>
             </div>
           </div>
+
+          {/* App Screenshots */}
+          <section className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/40 p-5">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="text-sm font-semibold text-white">
+                  App Screenshots
+                </h3>
+                <p className="mt-1 text-[11px] leading-relaxed text-slate-400">
+                  Add screenshots of your application for the App Details page.
+                  You can select multiple images at once.
+                </p>
+              </div>
+
+              <span className="shrink-0 rounded-full border border-slate-700 bg-slate-950 px-2.5 py-1 text-[10px] font-medium text-slate-400">
+                {screenshots.length} {screenshots.length === 1 ? 'image' : 'images'}
+              </span>
+            </div>
+
+            <input
+              ref={screenshotFileInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              multiple
+              onChange={handleScreenshotFileInputChange}
+              className="hidden"
+              id="screenshot-file-picker"
+            />
+
+            <button
+              type="button"
+              onClick={() => screenshotFileInputRef.current?.click()}
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-slate-700 bg-slate-950/70 px-4 py-5 text-xs font-semibold text-slate-300 transition hover:border-cyan-500/60 hover:bg-slate-900 hover:text-cyan-300"
+            >
+              <ImageIcon className="h-5 w-5" />
+              <span>Browse Screenshots from Device</span>
+            </button>
+
+            <p className="text-center text-[10px] text-slate-500">
+              PNG, JPEG, or WebP • Maximum 10 MB per screenshot
+            </p>
+
+            {screenshots.length > 0 && (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {screenshots.map((screenshot, index) => (
+                  <div
+                    key={screenshot.id}
+                    className="group relative overflow-hidden rounded-xl border border-slate-800 bg-slate-950"
+                  >
+                    <img
+                      src={screenshot.url}
+                      alt={screenshot.name || `App screenshot ${index + 1}`}
+                      className="aspect-[9/16] w-full object-cover"
+                    />
+
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-2 pt-8">
+                      <p className="truncate text-[10px] text-slate-300">
+                        {screenshot.name || `Screenshot ${index + 1}`}
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveScreenshot(screenshot.id)}
+                      className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full border border-red-400/30 bg-red-950/80 text-red-300 opacity-0 transition group-hover:opacity-100 hover:bg-red-900 hover:text-white"
+                      title="Remove screenshot"
+                      aria-label={`Remove screenshot ${index + 1}`}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
 
           {/* Short Description with Auto-generation */}
           <div className="space-y-2 p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80">
@@ -875,4 +1003,10 @@ export function AppFormModal({
     </div>
   );
 }
+
+
+
+
+
+
 
