@@ -3,7 +3,10 @@ import { authorizeAdmin } from '../lib/server/authorizeAdmin.js';
 
 const GITHUB_OWNER = 'seeraajs';
 const GITHUB_REPO = 'siraj-ahmed-apks';
-const GITHUB_BRANCH = 'main';
+const GITHUB_BRANCH =
+  process.env.VERCEL_ENV === 'preview'
+    ? 'security/protect-upload-apis-20261010'
+    : 'main';
 
 const ALLOWED_TYPES = new Set([
   'image/png',
