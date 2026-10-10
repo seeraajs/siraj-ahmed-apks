@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { authorizeAdmin } from '../lib/server/authorizeAdmin';
+import { authorizeAdmin } from '../lib/server/authorizeAdmin.js';
 
 const GITHUB_OWNER = 'seeraajs';
 const GITHUB_REPO = 'siraj-ahmed-apks';
