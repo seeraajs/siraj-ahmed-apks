@@ -1,13 +1,17 @@
-﻿export async function uploadAppScreenshot(
+import { auth } from './firebase';
+
+export async function uploadAppScreenshot(
   file: File,
   slug: string
 ): Promise<string> {
   const fileBase64 = await fileToBase64(file);
+  const idToken = await getAdminIdToken();
 
   const response = await fetch('/api/upload-screenshot', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${idToken}`,
     },
     body: JSON.stringify({
       fileName: `${slug}-screenshot-${Date.now()}.${getExtension(file.name)}`,
@@ -37,11 +41,13 @@ export async function uploadAppIcon(
   slug: string
 ): Promise<string> {
   const fileBase64 = await fileToBase64(file);
+  const idToken = await getAdminIdToken();
 
   const response = await fetch('/api/upload-icon', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${idToken}`,
     },
     body: JSON.stringify({
       fileName: `${slug}-${Date.now()}.${getExtension(file.name)}`,
@@ -63,6 +69,16 @@ export async function uploadAppIcon(
   }
 
   return data.iconUrl;
+}
+
+async function getAdminIdToken(): Promise<string> {
+  const user = auth.currentUser;
+
+  if (!user) {
+    throw new Error('Please sign in to the authorized admin account before uploading.');
+  }
+
+  return user.getIdToken();
 }
 
 function fileToBase64(file: File): Promise<string> {

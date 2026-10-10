@@ -297,8 +297,14 @@ export function AppFormModal({
 
   const file = files[0];
 
-  if (!file.type.startsWith('image/')) {
-    console.warn('Selected icon is not a valid image file.');
+  if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+    alert('Please select a PNG, JPEG, or WebP icon.');
+    e.target.value = '';
+    return;
+  }
+
+  if (file.size > 3 * 1024 * 1024) {
+    alert('The app icon is too large. Maximum size is 3 MB.');
     e.target.value = '';
     return;
   }
@@ -350,8 +356,8 @@ export function AppFormModal({
           continue;
         }
 
-        if (file.size > 10 * 1024 * 1024) {
-          alert(`Screenshot is too large: ${file.name}. Maximum size is 10 MB.`);
+        if (file.size > 3 * 1024 * 1024) {
+          alert(`Screenshot is too large: ${file.name}. Maximum size is 3 MB.`);
           continue;
         }
 
@@ -711,7 +717,7 @@ export function AppFormModal({
             <input
               ref={iconFileInputRef}
               type="file"
-              accept="image/*"
+              accept="image/png,image/jpeg,image/webp"
               onChange={handleIconFileInputChange}
               className="hidden"
               id="icon-file-picker"
@@ -794,7 +800,7 @@ export function AppFormModal({
             </button>
 
             <p className="text-center text-[10px] text-slate-500">
-              PNG, JPEG, or WebP • Maximum 10 MB per screenshot
+              PNG, JPEG, or WebP • Maximum 3 MB per screenshot
             </p>
 
             {screenshots.length > 0 && (
