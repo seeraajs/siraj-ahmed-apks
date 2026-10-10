@@ -1,0 +1,4 @@
+﻿User-agent: *
+Allow: /
+
+Sitemap: https://siraj-ahmed-apks-gv1s.vercel.app/sitemap.xml
