@@ -9,6 +9,7 @@ type FirebaseLookupResponse = {
   users?: Array<{
     localId?: string;
     email?: string;
+    emailVerified?: boolean;
   }>;
 };
 
@@ -91,6 +92,13 @@ export async function authorizeAdmin(
     if (!firebaseUser?.localId || !firebaseUser.email) {
       res.status(401).json({
         error: 'A valid Firebase administrator session is required.',
+      });
+      return false;
+    }
+
+    if (firebaseUser.emailVerified !== true) {
+      res.status(403).json({
+        error: 'Please verify your Firebase administrator email before uploading app assets.',
       });
       return false;
     }

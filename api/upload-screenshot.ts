@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { authorizeAdmin } from '../lib/server/authorizeAdmin.js';
+import { matchesImageSignature } from '../lib/server/validateImageSignature.js';
 
 const GITHUB_OWNER = 'seeraajs';
 const GITHUB_REPO = 'siraj-ahmed-apks';
@@ -84,6 +85,11 @@ export default async function handler(
 
     if (Number(fileSize) !== decodedSize) {
       return res.status(400).json({ error: 'Screenshot size validation failed.' });
+    }
+
+    const imageData = Buffer.from(fileBase64, 'base64');
+    if (!matchesImageSignature(imageData, contentType)) {
+      return res.status(400).json({ error: 'Image content does not match the declared PNG, JPEG, or WebP type.' });
     }
 
     const safeFileName = fileName
