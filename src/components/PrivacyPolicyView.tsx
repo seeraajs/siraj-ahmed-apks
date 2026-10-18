@@ -154,12 +154,70 @@ export function PrivacyPolicyView({ onNavigate }: PrivacyPolicyViewProps) {
         </p>
       </section>
 
+      {/* Advertising and cookies */}
+      <section className="p-6 sm:p-8 rounded-3xl bg-slate-900/90 border border-slate-800 space-y-4">
+        <div className="flex items-center gap-3">
+          <ShieldCheck className="w-5 h-5 text-amber-400" />
+          <h2 className="text-lg font-bold text-white">
+            4. Advertising and Cookies
+          </h2>
+        </div>
+
+        <p className="text-sm text-slate-300 leading-relaxed">
+          Siraj Ahmed Tech may use Google AdSense to display advertisements
+          and help support the operation and maintenance of this website.
+          This section applies when advertising services are enabled.
+        </p>
+
+        <p className="text-sm text-slate-300 leading-relaxed">
+          Google and its advertising partners may use cookies and similar
+          technologies to serve advertisements, measure performance,
+          prevent fraud, limit repeated advertisements, and personalize ads
+          where enabled and permitted. These technologies may process
+          information such as browser and device information, IP address,
+          and interactions with this website.
+        </p>
+
+        <p className="text-sm text-slate-300 leading-relaxed">
+          Where required by applicable law or Google's consent requirements,
+          appropriate consent or privacy choices will be presented before
+          relevant technologies are used. Available choices may also depend
+          on your browser settings and Google's advertising settings.
+        </p>
+
+        <p className="text-sm text-slate-300 leading-relaxed">
+          For more information about Google's privacy practices, visit{" "}
+          <a
+            href="https://business.safety.google/privacy/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-400 hover:text-indigo-300 underline"
+          >
+            Google's information about data use
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://policies.google.com/technologies/ads"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-400 hover:text-indigo-300 underline"
+          >
+            Google's advertising technologies policy
+          </a>.
+        </p>
+
+        <p className="text-sm text-slate-300 leading-relaxed">
+          This policy will be updated as necessary to reflect the advertising
+          services and data practices actually used on this website.
+        </p>
+      </section>
+
       {/* Downloads */}
       <section className="p-6 sm:p-8 rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
         <div className="flex items-center gap-3">
           <Download className="w-5 h-5 text-emerald-400" />
           <h2 className="text-lg font-bold text-white">
-            4. APK Downloads &amp; External Applications
+            5. APK Downloads &amp; External Applications
           </h2>
         </div>
 
@@ -209,7 +267,7 @@ export function PrivacyPolicyView({ onNavigate }: PrivacyPolicyViewProps) {
         <div className="flex items-center gap-3">
           <Lock className="w-5 h-5 text-cyan-400" />
           <h2 className="text-lg font-bold text-white">
-            5. Security
+            6. Security
           </h2>
         </div>
 
@@ -230,7 +288,7 @@ export function PrivacyPolicyView({ onNavigate }: PrivacyPolicyViewProps) {
       {/* Children's privacy */}
       <section className="p-6 sm:p-8 rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
         <h2 className="text-lg font-bold text-white">
-          6. Children's Privacy
+          7. Children's Privacy
         </h2>
 
         <p className="text-sm text-slate-300 leading-relaxed">
@@ -243,7 +301,7 @@ export function PrivacyPolicyView({ onNavigate }: PrivacyPolicyViewProps) {
       {/* Changes */}
       <section className="p-6 sm:p-8 rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
         <h2 className="text-lg font-bold text-white">
-          7. Changes to This Policy
+          8. Changes to This Policy
         </h2>
 
         <p className="text-sm text-slate-300 leading-relaxed">
@@ -259,7 +317,7 @@ export function PrivacyPolicyView({ onNavigate }: PrivacyPolicyViewProps) {
         <div className="flex items-center gap-3">
           <Mail className="w-5 h-5 text-cyan-400" />
           <h2 className="text-lg font-bold text-white">
-            8. Contact
+            9. Contact
           </h2>
         </div>
 
