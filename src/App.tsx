@@ -476,15 +476,15 @@ export default function App() {
               <div className="relative max-w-3xl space-y-6">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-cyan-950/80 text-cyan-400 border border-cyan-800/80 shadow-xs">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Direct Android APK Distribution</span>
+                  <span>ANDROID APPS &amp; TOOLS</span>
                 </div>
 
                 <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.12]">
-                  Independent Android Applications &amp; Software.
+                  Discover Useful Apps for Everyday Life
                 </h1>
 
                 <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
-                  Siraj Ahmed Tech provides standalone Android applications directly. Browse published software releases, inspect package information and SHA-256 checksums, and download APKs directly.
+                  Explore practical Android apps, check release and compatibility details, and download APKs directly. Web app access is available where supported.
                 </p>
 
                 <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -495,7 +495,7 @@ export default function App() {
                     className="px-6 py-3.5 rounded-xl font-bold text-xs sm:text-sm text-slate-950 bg-gradient-to-r from-cyan-400 to-blue-400 hover:from-cyan-300 hover:to-blue-300 shadow-lg shadow-cyan-950/30 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
                   >
                     <Layers className="w-4 h-4" />
-                    <span>Explore Applications</span>
+                    <span>Explore Our Apps</span>
                     <ArrowRight className="w-4 h-4 ml-1" />
                   </button>
 
@@ -505,7 +505,7 @@ export default function App() {
                     onClick={() => navigateTo('about')}
                     className="px-5 py-3.5 rounded-xl font-semibold text-xs sm:text-sm text-slate-300 bg-slate-900/90 hover:bg-slate-800 border border-slate-700 hover:border-slate-600 transition-colors cursor-pointer"
                   >
-                    About Repository
+                    About Us
                   </button>
                 </div>
               </div>
@@ -518,10 +518,10 @@ export default function App() {
                   </div>
                   <div>
                     <h4 className="font-bold text-xs text-white uppercase tracking-wider font-mono">
-                      Direct APK Distribution
+                      Direct APK Downloads
                     </h4>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      Direct standalone binary downloads straight from the developer.
+                      Download published APK releases directly from Siraj Ahmed Tech.
                     </p>
                   </div>
                 </div>
@@ -532,10 +532,10 @@ export default function App() {
                   </div>
                   <div>
                     <h4 className="font-bold text-xs text-white uppercase tracking-wider font-mono">
-                      Fast &amp; Unbloated
+                      Simple &amp; Practical
                     </h4>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      Designed to avoid unnecessary data collection and permissions where applicable.
+                      Explore useful apps designed with a focus on straightforward, practical features.
                     </p>
                   </div>
                 </div>
@@ -546,10 +546,10 @@ export default function App() {
                   </div>
                   <div>
                     <h4 className="font-bold text-xs text-white uppercase tracking-wider font-mono">
-                      ARM64 &amp; x86_64
+                      Android Compatibility
                     </h4>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      Targeted native architecture builds supporting modern Android devices.
+                      Check each app's Android version requirements and compatibility details before downloading.
                     </p>
                   </div>
                 </div>
@@ -562,10 +562,10 @@ export default function App() {
                 <div>
                   <div className="flex items-center gap-2 text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider mb-1">
                     <Smartphone className="w-4 h-4" />
-                    <span>Published Releases</span>
+                    <span>Our Apps</span>
                   </div>
                   <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                    Featured Android Apps
+                    Explore Our Apps
                   </h2>
                 </div>
 
@@ -575,7 +575,7 @@ export default function App() {
                   onClick={() => navigateTo('apps')}
                   className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
                 >
-                  <span>Browse complete catalog ({publishedApps.length})</span>
+                  <span>Explore All Apps ({publishedApps.length})</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
