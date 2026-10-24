@@ -580,7 +580,11 @@ export default function App() {
                 </button>
               </div>
 
-              {publishedApps.length === 0 ? (
+              {firebaseLoading ? (
+                <div className="py-16 text-center text-sm text-slate-400">
+                  Loading applications...
+                </div>
+              ) : publishedApps.length === 0 ? (
                 <div className="py-16 text-center space-y-3 rounded-3xl bg-slate-900/60 border border-slate-800 p-8">
                   <Smartphone className="w-10 h-10 text-slate-600 mx-auto" />
                   <h3 className="font-bold text-base text-white">No applications published yet</h3>
@@ -677,7 +681,11 @@ export default function App() {
             </div>
 
             {/* Results Grid */}
-            {sortedApps.length === 0 ? (
+            {firebaseLoading ? (
+              <div className="py-16 text-center text-sm text-slate-400">
+                Loading applications...
+              </div>
+            ) : sortedApps.length === 0 ? (
               <div className="py-16 text-center space-y-3 rounded-3xl bg-slate-900/60 border border-slate-800 p-8">
                 <Smartphone className="w-10 h-10 text-slate-600 mx-auto" />
                 <h3 className="font-bold text-base text-white">
@@ -814,7 +822,3 @@ export default function App() {
     </div>
   );
 }
-
-
-
-
