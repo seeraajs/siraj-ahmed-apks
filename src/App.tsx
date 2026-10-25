@@ -67,7 +67,8 @@ export default function App() {
   const [apps, setApps] = useState<Application[]>([]);
   const [firebaseLoading, setFirebaseLoading] = useState(true);
   const [firebaseError, setFirebaseError] = useState<string | null>(null);
-  const [authReady, setAuthReady] = useState(false);
+  const [catalogueError, setCatalogueError] = useState<string | null>(null);
+  const [catalogueRetry, setCatalogueRetry] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortOption, setSortOption] = useState<AppSortOption>('latest');
@@ -82,8 +83,6 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setAuthReady(true);
-
       if (!firebaseUser) {
         setAdminUser(null);
         setFirebaseError(null);
@@ -115,45 +114,64 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
+  // The published catalogue is public content; it must not wait for admin auth.
   useEffect(() => {
-  if (!authReady) return;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-  const applicationsQuery = query(
-    collection(db, 'applications'),
-    where('published', '==', true)
-  );
+    const applicationsQuery = query(
+      collection(db, 'applications'),
+      where('published', '==', true)
+    );
 
-  const unsubscribe = onSnapshot(
-    applicationsQuery,
-    (snapshot) => {
-      const loadedApps = snapshot.docs.map((docSnap) => ({
-        id: docSnap.id,
-        ...docSnap.data(),
-      })) as Application[];
+    setFirebaseLoading(true);
+    setCatalogueError(null);
 
-      setApps(loadedApps);
+    // Avoid leaving visitors (and crawlers) on an endless loading state.
+    timeoutId = setTimeout(() => {
       setFirebaseLoading(false);
-      setFirebaseError(null);
-    },
-    (error) => {
-      console.error('Firestore applications listener failed:', error);
+      setCatalogueError(
+        'The application catalogue is taking too long to respond. Please retry.'
+      );
+    }, 12000);
 
-      if (error?.code === 'permission-denied') {
-        setFirebaseError(
-          'You are not authorized to access the application repository.'
-        );
-      } else {
-        setFirebaseError(
-          'Unable to load applications from the repository.'
-        );
+    const unsubscribe = onSnapshot(
+      applicationsQuery,
+      (snapshot) => {
+        if (timeoutId) clearTimeout(timeoutId);
+
+        const loadedApps = snapshot.docs.map((docSnap) => ({
+          id: docSnap.id,
+          ...docSnap.data(),
+        })) as Application[];
+
+        setApps(loadedApps);
+        setFirebaseLoading(false);
+        setCatalogueError(null);
+      },
+      (error) => {
+        if (timeoutId) clearTimeout(timeoutId);
+
+        console.error('Firestore applications listener failed:', error);
+
+        if (error?.code === 'permission-denied') {
+          setCatalogueError(
+            'You are not authorized to access the application repository.'
+          );
+        } else {
+          setCatalogueError(
+            'Unable to load applications from the repository.'
+          );
+        }
+
+        setFirebaseLoading(false);
       }
+    );
 
-      setFirebaseLoading(false);
-    }
-  );
-
-  return () => unsubscribe();
-}, [authReady]);
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      unsubscribe();
+    };
+  }, [catalogueRetry]);
 
   // Sync view state with browser navigation / hash.
   // A private '#admin-login' hash is treated as a modal trigger, not a public view.
@@ -452,6 +470,21 @@ export default function App() {
         </div>
       )}
 
+      {catalogueError && (
+        <div className="mx-auto mt-4 flex w-full max-w-5xl flex-wrap items-center justify-between gap-3 rounded-2xl border border-rose-800/80 bg-rose-950/50 px-4 py-3 text-xs text-rose-200">
+          <span>{catalogueError}</span>
+          {!firebaseLoading && (
+            <button
+              type="button"
+              onClick={() => setCatalogueRetry((attempt) => attempt + 1)}
+              className="rounded-lg border border-rose-700 px-3 py-1.5 font-semibold hover:bg-rose-900/60"
+            >
+              Retry loading apps
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Navigation Bar */}
       <Navbar
         currentView={view}
@@ -584,6 +617,10 @@ export default function App() {
                 <div className="py-16 text-center text-sm text-slate-400">
                   Loading applications...
                 </div>
+              ) : catalogueError && publishedApps.length === 0 ? (
+                <div className="py-16 text-center text-sm text-slate-400">
+                  The application catalogue could not be loaded. Use the retry option above.
+                </div>
               ) : publishedApps.length === 0 ? (
                 <div className="py-16 text-center space-y-3 rounded-3xl bg-slate-900/60 border border-slate-800 p-8">
                   <Smartphone className="w-10 h-10 text-slate-600 mx-auto" />
@@ -684,6 +721,10 @@ export default function App() {
             {firebaseLoading ? (
               <div className="py-16 text-center text-sm text-slate-400">
                 Loading applications...
+              </div>
+            ) : catalogueError && publishedApps.length === 0 ? (
+              <div className="py-16 text-center text-sm text-slate-400">
+                The application catalogue could not be loaded. Use the retry option above.
               </div>
             ) : sortedApps.length === 0 ? (
               <div className="py-16 text-center space-y-3 rounded-3xl bg-slate-900/60 border border-slate-800 p-8">
